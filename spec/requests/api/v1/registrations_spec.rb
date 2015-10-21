@@ -10,16 +10,14 @@ RSpec.describe '/api/v1/registrations' do
         }
       }
 
-      it 'returns info included access_token' do
+      it 'returns user info' do
         post '/api/v1/registrations', attributes_for(:user)
 
         expect(User.count).to eq(1)
-        expect(Device.count).to eq(1)
 
         user_json = json_body['user']
         expect(user_json.name).to eq(user_attributes.name)
         expect(user_json.email).to eq(user_attributes.email)
-        expect(user_json.access_token).to eq(user_attributes.access_token)
         expect(response.status).to eq(201)
       end
     end
