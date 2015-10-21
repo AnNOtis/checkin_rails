@@ -1,11 +1,14 @@
 RSpec.describe '/api/v1/registrations' do
-  describe 'POST' do
-    context 'when user register' do
-      let(:user_attributes) { attributes_for(:user) }
-      it 'returns user info' do
+  describe 'POST register user' do
+    context 'when user not exist' do
+      let(:user_attributes) { attributes_for(:user).merge({ device_token: '123456789' }) }
+      it 'creates user and device' do
+        user_count = User.count
+        device_count = Device.count
         post '/api/v1/registrations', user_attributes
 
-        expect(User.count).to eq(1)
+        expect(User.count).to eq(user_count + 1)
+        expect(Device.count).to eq(device_count + 1)
 
         user_json = json_body['user']
         expect(user_json['name']).to eq(user_attributes[:name])
@@ -14,11 +17,44 @@ RSpec.describe '/api/v1/registrations' do
       end
     end
 
-    context 'when user register with invalid value' do
-      it 'return error messages' do
+    context 'when user exist' do
+      it 'creates device belongs to user' do
+        user = create(:user)
+        expect do
+          post(
+            '/api/v1/registrations',
+            email: user.email,
+            password: user.password,
+            device_token: '123456789'
+          )
+        end.to change{ Device.count }.by(1)
+
+        expect(response.status).to eq(201)
+      end
+    end
+
+    context 'when device exist' do
+      it 'returns errors' do
+        user = create(:user)
+        device = user.devices.create(device_token: '123456789')
+
+        post(
+          '/api/v1/registrations',
+          email: user.email,
+          password: user.password,
+          device_token: device.device_token
+        )
+
+        expect(json_body.fetch('errors')).not_to be_empty
+        expect(response.status).to eq(422)
+      end
+    end
+
+    context 'with invalid value' do
+      it 'returns error messages' do
         post '/api/v1/registrations', attributes_for(:user, :invalid)
         expect(json_body.fetch('errors')).not_to be_empty
-        expect(response.status).to eq 422
+        expect(response.status).to eq(422)
       end
     end
   end
