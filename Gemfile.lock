@@ -187,6 +187,7 @@ DEPENDENCIES
   pg
   quiet_assets
   rails (= 4.2.4)
+  responders
   rspec-rails
   sdoc (~> 0.4.0)
   shoulda-matchers
