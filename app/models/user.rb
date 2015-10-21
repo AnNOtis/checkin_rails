@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
 
   # association macros
   has_many :devices
+  has_many :checkins
 
   # validation macros
   validates :name, presence: true, uniqueness: true

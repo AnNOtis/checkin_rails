@@ -11,10 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151021090111) do
+ActiveRecord::Schema.define(version: 20151021114232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "checkins", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.float    "latitude"
+    t.float    "longitude"
+    t.string   "address"
+    t.string   "photo"
+    t.text     "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "checkins", ["user_id"], name: "index_checkins_on_user_id", using: :btree
 
   create_table "devices", force: :cascade do |t|
     t.integer  "user_id"
@@ -46,5 +60,6 @@ ActiveRecord::Schema.define(version: 20151021090111) do
   add_index "users", ["name"], name: "index_users_on_name", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "checkins", "users"
   add_foreign_key "devices", "users"
 end
