@@ -1,12 +1,15 @@
 FactoryGirl.define do
   factory :user do
-    name 'LETMEIN'
-    email 'letmein@gmail.com'
+    name { Faker::Name.name }
+    sequence :email do |n|
+      "person#{n}@example.com"
+    end
+
     password '12345678'
     password_confirmation '12345678'
-  end
 
-  trait :invalid do
-    email nil
+    trait :invalid do
+      email nil
+    end
   end
 end
