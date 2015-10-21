@@ -1,8 +1,8 @@
 RSpec.describe '/api/v1/checkins' do
   describe 'GET /api/v1/checkins' do
     it 'returns a list of all checkins' do
-      create(:checkins)
-      create(:checkins, name: '另一個打卡')
+      create(:checkin)
+      create(:checkin, name: '另一個打卡')
       get '/api/v1/checkins'
 
       expect(json_body['checkins'].count).to eq(2)
@@ -12,7 +12,7 @@ RSpec.describe '/api/v1/checkins' do
 
   describe 'POST /api/v1/checkins' do
     it 'creates the checkins' do
-      checkin_attributes = attributes_for(:checkins)
+      checkin_attributes = attributes_for(:checkin)
       expect do
         post '/api/v1/checkins', checkin_attributes
       end.to change{ Checkin.count }.by(1)
