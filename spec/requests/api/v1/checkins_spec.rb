@@ -17,28 +17,27 @@ RSpec.describe '/api/v1/checkins' do
         post '/api/v1/checkins', checkin_attributes
       end.to change{ Checkin.count }.by(1)
 
-      expect(json_body['checkin']).to eq(checkin_attributes)
       expect(response.status).to eq(201)
     end
   end
 
   describe 'PUT /api/v1/checkins/:id' do
     it 'updates the checkins' do
-      checkin = create(:checkin)
+      checkin = create(:checkin, id: 1)
       update_attributes = { name: '更改地點名稱' }
-      put '/api/v1/checkins', { id: checkin.id }.merge(update_attributes)
+      put '/api/v1/checkins/1', update_attributes
 
-      expect(json_body['checkin']).to eq(checkin.attributes.merge(update_attributes))
+      expect(json_body['checkin']['name']).to eq(update_attributes[:name])
       expect(response.status).to eq(200)
     end
   end
 
   describe 'DELETE /api/v1/checkins/:id' do
     it 'destroy the checkins' do
-      checkin = create(:checkin)
+      checkin = create(:checkin, id: 1)
       expect do
-        delete '/api/v1/checkins', id: checkin.id
-      end.to change{ Checkin.count }.by(1)
+        delete '/api/v1/checkins/1'
+      end.to change{ Checkin.count }.by(-1)
 
       expect(response.status).to eq(204)
     end
