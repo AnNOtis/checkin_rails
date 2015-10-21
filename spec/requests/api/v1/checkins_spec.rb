@@ -8,6 +8,21 @@ RSpec.describe '/api/v1/checkins' do
       expect(json_body['checkins'].count).to eq(2)
       expect(response.status).to eq(200)
     end
+
+    context 'when query near checkins' do
+      it 'return a list of near checkins in radius' do
+        current_lat = 25.0477505
+        current_lng = 121.5148712
+        create(:checkin, latitude: 25.047099, longitude: 121.516974) #64m
+        create(:checkin, latitude: 24.718455, longitude: 121.360017) #39.91km
+        create(:checkin, latitude: 23.624387, longitude: 120.682441) #179.11km
+
+        get '/api/v1/checkins', lat: current_lat, lng: current_lng, radius: 50
+
+        expect(json_body['checkins'].count).to eq(2)
+        expect(response.status).to eq(200)
+      end
+    end
   end
 
   describe 'POST /api/v1/checkins' do
