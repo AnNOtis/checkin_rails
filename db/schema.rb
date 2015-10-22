@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151021114232) do
+ActiveRecord::Schema.define(version: 20151022023611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,17 @@ ActiveRecord::Schema.define(version: 20151021114232) do
 
   add_index "devices", ["user_id"], name: "index_devices_on_user_id", using: :btree
 
+  create_table "follower_following_ships", force: :cascade do |t|
+    t.integer  "follower_id"
+    t.integer  "following_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "follower_following_ships", ["follower_id", "following_id"], name: "index_follower_following_ships_on_follower_id_and_following_id", unique: true, using: :btree
+  add_index "follower_following_ships", ["follower_id"], name: "index_follower_following_ships_on_follower_id", using: :btree
+  add_index "follower_following_ships", ["following_id"], name: "index_follower_following_ships_on_following_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
@@ -62,4 +73,6 @@ ActiveRecord::Schema.define(version: 20151021114232) do
 
   add_foreign_key "checkins", "users"
   add_foreign_key "devices", "users"
+  add_foreign_key "follower_following_ships", "users", column: "follower_id"
+  add_foreign_key "follower_following_ships", "users", column: "following_id"
 end
