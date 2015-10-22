@@ -5,16 +5,17 @@ RSpec.describe '/api/v1/device/followings' do
   include_context 'api request authentication helper methods'
   include_context 'api request global before and after hooks'
 
-  describe 'POST /api/v1/device/followings/:id' do
-
+  describe 'POST /api/v1/device/followings' do
     it 'creates following record' do
-      follower = sign_in(create(:user))
-      following = create(:user, email: 'XXX@gmail.com')
+      follower = create(:user)
+      following = create(:user)
+      
+      sign_in(follower)
 
-      post "/api/v1/device/followings/#{following.id}"
+      post '/api/v1/device/followings', following_id: following.id
 
-      expect(follower.followins).to include(following)
-      expect(following.followers).to include(follower)
+      expect(follower.followings.last.id).to eq(following.id)
+      expect(following.followers.last.id).to eq(follower.id)
     end
   end
 end
