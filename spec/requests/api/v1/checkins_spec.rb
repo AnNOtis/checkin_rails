@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe '/api/v1/checkins' do
   describe 'GET /api/v1/checkins' do
     it 'returns a list of all checkins' do

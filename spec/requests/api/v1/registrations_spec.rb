@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe '/api/v1/registrations' do
   describe 'POST register user' do
     context 'when user not exist' do
