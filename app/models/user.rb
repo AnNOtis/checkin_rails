@@ -48,4 +48,16 @@ class User < ActiveRecord::Base
   rescue
     nil
   end
+
+  def self.find_or_initialize_with(info_params)
+    user = find_by(email: info_params[:email])
+
+    return User.new(info_params) if user.blank?
+
+    if !user.valid_password?(info_params[:password])
+      user.errors.add(:base, message: 'email or password not correct')
+    end
+
+    user
+  end
 end
