@@ -14,11 +14,12 @@ class Checkin < ActiveRecord::Base
   validates :longitude, presence: true
 
   # callback macros
-  # => Address is automatically fetched and saved from lat and lng 
+  # => Address is automatically fetched and saved from lat and lng
   after_validation :reverse_geocode
 
   # other macros
   reverse_geocoded_by :latitude, :longitude
 
+  mount_uploader :photo, PhotoUploader
   # scope macros
 end
