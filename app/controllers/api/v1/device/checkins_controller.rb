@@ -1,4 +1,6 @@
-class API::V1::CheckinsController < API::BaseController
+class API::V1::Device::CheckinsController < API::V1::Device::BaseController
+  before_action :find_and_check_checkin, only: [:update, :destroy]
+
   def index
     @checkins =
       if params[:lat] && params[:lng] && params[:radius]
@@ -6,32 +8,30 @@ class API::V1::CheckinsController < API::BaseController
       else
         Checkin.limit(100)
       end
-      
+
     render json: @checkins, status: 200
   end
 
   def create
-    @checkin = Checkin.new(checkin_params)
+    @checkin = current_user.checkins.build(checkin_params)
 
     if @checkin.save
       render json: @checkin, root: true, status: 201
     else
-      render_error(messages: @checkin.errors.full_messages, status: 422)
+      render_error(message: @checkin.errors.full_messages, status: 422)
     end
   end
 
   def update
-    @checkin = Checkin.find(params[:id])
-
     if @checkin.update(checkin_params)
       render json: @checkin, root: true, status: 200
     else
-      render_error(messages: @checkin.errors.full_messages, status: 422)
+      render_error(message: @checkin.errors.full_messages, status: 422)
     end
   end
 
   def destroy
-    Checkin.find(params[:id]).destroy
+    @checkin.destroy
 
     render json: {}, status: 204
   end
@@ -48,5 +48,11 @@ class API::V1::CheckinsController < API::BaseController
       :photo,
       :comment
     )
+  end
+
+  def find_and_check_checkin
+    @checkin = Checkin.find_by(id: params[:id])
+    render_error(message: 'Checkin not found', status: 404) if @checkin.blank?
+    render_error(message: 'Not your checkin', status: 403) if @checkin.user != current_user
   end
 end
