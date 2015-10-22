@@ -8,10 +8,9 @@ class API::BaseController < ActionController::Base
   end
 
   def authenticate_user_from_token!
-    device_token = params[:device_token].presence
-    user = User.joins(:devices).find_by('devices.device_token' => device_token)
-    
-    if user
+    device = Device.find_by(device_token: params[:device_token])
+
+    if user = device.try(:user)
       sign_in :user, user, store: false
     end
   end
