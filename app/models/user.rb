@@ -38,17 +38,6 @@ class User < ActiveRecord::Base
     user.valid_password?(password) ? user : nil
   end
 
-  def follow!(following)
-    followings << following
-  end
-
-  def follow(following)
-    follow!(following)
-    following
-  rescue
-    nil
-  end
-
   def self.find_or_initialize_with(info_params)
     user = find_by(email: info_params[:email])
 
@@ -59,5 +48,22 @@ class User < ActiveRecord::Base
     end
 
     user
+  end
+
+  def follow(to_follow)
+    if to_follow.id == id
+      add_error('cannot follow yourself')
+    elsif to_follow.in? followings
+      add_error('already followed')
+    else
+      followings << to_follow
+    end
+  end
+
+  private
+
+  def add_error(message)
+    errors.add(:base, message: message)
+    false
   end
 end
