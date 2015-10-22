@@ -7,6 +7,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'devise'
 gem 'active_model_serializers'
 gem 'geocoder'
+gem 'carrierwave'
 
 group :development, :test do
   gem 'byebug'
