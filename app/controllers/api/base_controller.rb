@@ -10,9 +10,16 @@ class API::BaseController < ActionController::Base
   def authenticate_user_from_token!
     device_token = params[:device_token].presence
     user = User.joins(:devices).find_by('devices.device_token' => device_token)
-
+    
     if user
-      sign_in user, store: false
+      sign_in :user, user, store: false
+    end
+  end
+
+  def required_login
+    if !current_user
+      render_error(message: 'Required login', status: 401)
+      return
     end
   end
 
