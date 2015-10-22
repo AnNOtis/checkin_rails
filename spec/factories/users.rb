@@ -11,5 +11,13 @@ FactoryGirl.define do
     trait :invalid do
       email nil
     end
+
+    trait :avatar do
+      avatar do
+        Rack::Test::UploadedFile.new(
+          File.join(Rails.root, 'spec', 'support', 'images', 'avatar.png')
+        )
+      end
+    end
   end
 end

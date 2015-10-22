@@ -8,6 +8,7 @@ gem 'devise'
 gem 'active_model_serializers'
 gem 'geocoder'
 gem 'carrierwave'
+gem 'mini_magick'
 
 group :development, :test do
   gem 'byebug'
