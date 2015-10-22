@@ -47,24 +47,20 @@ RSpec.describe User do
   end
 
   describe '#follow' do
-    context "when the following didn't followed by current user"  do
-      it 'creates following relationship and turn following user' do
-        follower = create(:user)
-        following = create(:user)
+    let(:user) { create(:user) }
+    let(:dhh) { create(:user) }
 
-        expect(follower.follow(following)).to eq(following)
-        expect(follower.followings.last.id).to eq(following.id)
-        expect(following.followers.last.id).to eq(follower.id)
-      end
+    it 'cannot follow yourself' do
+      user.follow user
+
+      expect(user.errors[:base]).to eq [{ message: 'cannot follow yourself' }]
     end
-    context "when the following followed by current user"  do
-      it 'returns nil' do
-        follower = create(:user)
-        following = create(:user)
-        follower.follow(following)
 
-        expect(follower.follow(following)).to be_nil
-      end
+    it 'cannot follow twice' do
+      user.follow dhh
+      user.follow dhh
+
+      expect(user.errors[:base]).to eq [{ message: 'already followed' }]
     end
   end
 end
