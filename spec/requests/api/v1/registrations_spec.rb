@@ -2,61 +2,47 @@ require 'rails_helper'
 
 RSpec.describe '/api/v1/registrations' do
   describe 'POST register user' do
-    context 'when user not exist' do
-      let(:user_attributes) { attributes_for(:user).merge({ device_token: '123456789' }) }
-      it 'creates user and device' do
-        user_count = User.count
-        device_count = Device.count
-        post '/api/v1/registrations', user_attributes
+    def do_request
+      post '/api/v1/registrations', params
+    end
 
-        expect(User.count).to eq(user_count + 1)
-        expect(Device.count).to eq(device_count + 1)
+    context 'with existing user' do
+      let(:user_attributes) { attributes_for(:user) }
+      let(:params) { Hash(device_token: 'token').merge!(user_attributes) }
 
-        user_json = json_body['user']
-        expect(user_json['name']).to eq(user_attributes[:name])
-        expect(user_json['email']).to eq(user_attributes[:email])
-        expect(response.status).to eq(201)
+      before { User.create(user_attributes) }
+
+      it 'renders correctly' do
+        do_request
+
+        expect(json_body['user']['email']).to eq(user_attributes[:email])
+        expect(response).to have_http_status(201)
       end
     end
 
-    context 'when user exist' do
-      it 'creates device belongs to user' do
-        user = create(:user)
-        expect do
-          post(
-            '/api/v1/registrations',
-            email: user.email,
-            password: user.password,
-            device_token: '123456789'
-          )
-        end.to change{ Device.count }.by(1)
+    context 'without existing user' do
+      context 'with correct user info' do
+        let(:user_attributes) { attributes_for(:user) }
+        let(:params) { Hash(device_token: 'token').merge!(user_attributes) }
 
-        expect(response.status).to eq(201)
+        it 'renders correctly' do
+          do_request
+
+          expect(json_body['user']['email']).to eq(user_attributes[:email])
+          expect(response).to have_http_status(201)
+        end
       end
-    end
 
-    context 'when device exist' do
-      it 'returns errors' do
-        user = create(:user)
-        device = user.devices.create(device_token: '123456789')
+      context 'with incorrect user info' do
+        let(:user_attributes) { attributes_for(:user, :invalid) }
+        let(:params) { Hash(device_token: 'token').merge!(user_attributes) }
 
-        post(
-          '/api/v1/registrations',
-          email: user.email,
-          password: user.password,
-          device_token: device.device_token
-        )
+        it 'renders correctly' do
+          do_request
 
-        expect(json_body.fetch('errors')).not_to be_empty
-        expect(response.status).to eq(422)
-      end
-    end
-
-    context 'with invalid value' do
-      it 'returns error messages' do
-        post '/api/v1/registrations', attributes_for(:user, :invalid)
-        expect(json_body.fetch('errors')).not_to be_empty
-        expect(response.status).to eq(422)
+          expect(json_body['errors']).to be_present
+          expect(response).to have_http_status(422)
+        end
       end
     end
   end
