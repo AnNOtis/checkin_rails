@@ -1,17 +1,6 @@
 class API::V1::Device::CheckinsController < API::V1::Device::BaseController
   before_action :find_and_check_checkin, only: [:update, :destroy]
 
-  def index
-    @checkins =
-      if params[:lat] && params[:lng] && params[:radius]
-        Checkin.near([params[:lat], params[:lng]], params[:radius])
-      else
-        Checkin.limit(100)
-      end
-
-    render json: @checkins, status: 200
-  end
-
   def create
     @checkin = current_user.checkins.build(checkin_params)
 
