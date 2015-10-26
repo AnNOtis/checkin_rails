@@ -28,7 +28,7 @@ class Device < ActiveRecord::Base
   def generate_token
     loop do
       token = Devise.friendly_token
-      break token unless Device.find_by(device_token: device_token)
+      break token unless Device.find_by(device_token: token)
     end
   end
 end
