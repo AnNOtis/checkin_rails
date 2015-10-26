@@ -3,8 +3,10 @@ class API::V1::RegistrationsController < API::V1::BaseController
   before_action :find_user, only: [:create]
 
   def create
-    if @user.persisted? || @user.save
+    if !@user.persisted? && @user.save
       render json: @user, status: 201, root: true
+    elsif @user.persisted?
+      render_error(message: 'Already signed up', status: 422)
     else
       render_error(message: @user.errors.full_messages, status: 422)
     end

@@ -15,8 +15,8 @@ RSpec.describe '/api/v1/registrations' do
       it 'renders correctly' do
         do_request
 
-        expect(json_body['user']['email']).to eq(user_attributes[:email])
-        expect(response).to have_http_status(201)
+        expect(json_body['errors']).to eq('Already signed up')
+        expect(response).to have_http_status(422)
       end
     end
 

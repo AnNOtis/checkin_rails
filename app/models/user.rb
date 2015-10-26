@@ -6,8 +6,8 @@ class User < ActiveRecord::Base
   # attr macros
 
   # association macros
-  has_many :devices
-  has_many :checkins
+  has_many :devices, dependent: :destroy
+  has_many :checkins, dependent: :destroy
 
   has_many :follower_relationships,
     class_name:  'FollowerFollowingShip',
