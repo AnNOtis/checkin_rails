@@ -1,4 +1,4 @@
-class API::V1::CheckinsController < API::BaseController
+class API::V1::CheckinsController < API::V1::BaseController
   def index
     @checkins =
       if params[:lat] && params[:lng] && params[:radius]

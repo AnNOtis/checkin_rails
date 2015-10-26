@@ -5,6 +5,7 @@ class API::BaseController < ActionController::Base
 
   def render_error(message:, status: 400)
     render json: { errors: message }, status: status
+    return
   end
 
   def authenticate_user_from_token!
@@ -24,5 +25,6 @@ class API::BaseController < ActionController::Base
 
   def render_server_error(exception)
     render json: { errors: exception.message }, status: 500
+    return
   end
 end

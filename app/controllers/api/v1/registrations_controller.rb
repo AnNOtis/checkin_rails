@@ -1,4 +1,4 @@
-class API::V1::RegistrationsController < API::BaseController
+class API::V1::RegistrationsController < API::V1::BaseController
   before_action :check_device_token, only: [:create]
   before_action :find_user, only: [:create]
 

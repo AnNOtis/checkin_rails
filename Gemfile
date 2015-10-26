@@ -5,7 +5,7 @@ gem 'pg'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'devise'
-gem 'active_model_serializers'
+gem 'active_model_serializers', '~> 0.8.3'
 gem 'geocoder'
 gem 'carrierwave'
 gem 'mini_magick'

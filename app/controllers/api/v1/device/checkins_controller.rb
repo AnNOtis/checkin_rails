@@ -5,7 +5,7 @@ class API::V1::Device::CheckinsController < API::V1::Device::BaseController
     @checkin = current_user.checkins.build(checkin_params)
 
     if @checkin.save
-      render json: @checkin, root: true, status: 201
+      render json: @checkin, root: 'checkin', status: 201
     else
       render_error(message: @checkin.errors.full_messages, status: 422)
     end
@@ -13,7 +13,7 @@ class API::V1::Device::CheckinsController < API::V1::Device::BaseController
 
   def update
     if @checkin.update(checkin_params)
-      render json: @checkin, root: true, status: 200
+      render json: @checkin, root: 'checkin', status: 200
     else
       render_error(message: @checkin.errors.full_messages, status: 422)
     end
