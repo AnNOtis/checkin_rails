@@ -63,4 +63,28 @@ RSpec.describe User do
       expect(user.errors[:base]).to eq [{ message: 'already followed' }]
     end
   end
+
+  describe '#find_or_create_device_by' do
+    let(:user) { create(:user) }
+
+    context 'with existing device' do
+      let(:device) { create(:device, user: user) }
+
+      it 'returns device' do
+        found_device = user.find_or_create_device_by(user_agent: device.user_agent)
+
+        expect(found_device).to eq(device)
+      end
+    end
+
+    context 'without existing device' do
+      let(:device_attributes){ attributes_for(:device) }
+      it 'creates device and return' do
+        found_device = user.find_or_create_device_by(user_agent: device_attributes[:user_agent])
+
+        expect(found_device.user_agent).to eq(device_attributes[:user_agent])
+        expect(found_device.device_token).to be_present
+      end
+    end
+  end
 end
