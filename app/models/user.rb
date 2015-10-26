@@ -51,6 +51,12 @@ class User < ActiveRecord::Base
     user
   end
 
+  def find_or_create_device_by(params)
+    devices.find_or_create_by(params) do |d|
+      d.ensure_device_token
+    end
+  end
+
   def follow(to_follow)
     if to_follow.id == id
       add_error('cannot follow yourself')
