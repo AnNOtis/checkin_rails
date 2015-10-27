@@ -10,6 +10,8 @@ gem 'geocoder'
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'rack-cors', :require => 'rack/cors'
+gem 'oj'
+gem 'oj_mimic_json'
 
 group :development, :test do
   gem 'byebug'
