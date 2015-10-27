@@ -22,4 +22,5 @@ class Checkin < ActiveRecord::Base
 
   mount_uploader :photo, PhotoUploader
   # scope macros
+  scope :newest_first, -> { order(created_at: :asc) }
 end
