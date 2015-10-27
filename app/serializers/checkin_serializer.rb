@@ -1,7 +1,7 @@
 class CheckinSerializer < ActiveModel::Serializer
   cached
   delegate :cache_key, to: :object
-  
+
   attributes \
     :id,
     :name,
@@ -9,9 +9,7 @@ class CheckinSerializer < ActiveModel::Serializer
     :longitude,
     :address,
     :photo,
-    :comment,
-    :created_at,
-    :updated_at
+    :comment
 
   has_one :user
 end

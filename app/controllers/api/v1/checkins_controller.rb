@@ -4,6 +4,7 @@ class API::V1::CheckinsController < API::V1::BaseController
       if params[:lat] && params[:lng] && params[:radius]
         Checkin.includes(:user)
           .near([params[:lat], params[:lng]], params[:radius])
+          .unscope(:order)
           .newest_first
       else
         Checkin.includes(:user).limit(100).newest_first
